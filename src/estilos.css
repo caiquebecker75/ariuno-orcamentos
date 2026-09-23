@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #0b0d1e;
+  --color-ink-2: #151934;
+  --color-iris: #6a5cff;
+  --color-iris-d: #4b3be0;
+  --color-blue: #4285ff;
+  --color-teal: #00c2a8;
+  --color-paper: #f7f8fd;
+  --color-paper-2: #eaedf9;
+  --color-linha: #dfe4f5;
+  --color-txt: #0b0d1e;
+  --color-txt-2: #4d5472;
+  --color-txt-3: #696f8d;
+  --color-lime: #c0ee4e;
+  --color-alerta: #c0362d;
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-txt);
+    font-family: var(--font-sans);
+    font-size: 15px;
+  }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.025em; }
+  :focus-visible { outline: 3px solid var(--color-iris); outline-offset: 2px; border-radius: 4px; }
+}
+
+@layer components {
+  .campo {
+    width: 100%;
+    border-radius: 10px;
+    background: var(--color-paper);
+    padding: 11px 13px;
+    font-size: 15px;
+    color: var(--color-ink);
+    transition: background-color 0.2s;
+  }
+  .campo:focus { background: var(--color-paper-2); outline: 2px solid var(--color-iris); }
+  .rotulo-campo { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--color-txt-2); }
+  .cartao { background: #fff; border-radius: 16px; box-shadow: 0 1px 2px rgb(11 13 30 / 0.05), 0 10px 28px -20px rgb(11 13 30 / 0.3); }
+  .rotulo-secao { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-txt-3); }
+}
+
+/* ───────────── documento que vira PDF ───────────── */
+.documento {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 18mm 16mm 24mm;
+  background: #fff;
+  color: #14172b;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  box-sizing: border-box;
+}
+.documento h1 { font-size: 21pt; line-height: 1.1; margin: 0; }
+.documento h2 { font-size: 13pt; margin: 0 0 8pt; }
+.documento h3 { font-size: 10.5pt; margin: 0 0 4pt; }
+.documento p { margin: 0 0 7pt; }
+.documento .mono { font-family: var(--font-mono); }
+
+.doc-tabela { width: 100%; border-collapse: collapse; font-size: 10pt; }
+.doc-tabela th { text-align: left; padding: 7pt 8pt; background: #0b0d1e; color: #fff; font-weight: 600; }
+.doc-tabela td { padding: 7pt 8pt; border-bottom: 1px solid #e6e9f6; vertical-align: top; }
+.doc-tabela tr:last-child td { border-bottom: none; }
+.doc-total td { background: #eaedf9; font-weight: 700; }
+
+.clausula { margin-bottom: 9pt; break-inside: avoid; }
+.clausula h3 { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.02em; }
+.clausula ol { margin: 0; padding-left: 0; list-style: none; }
+.clausula li { margin-bottom: 4pt; text-align: justify; }
+.clausula li .n { font-family: var(--font-mono); font-size: 8.5pt; color: #4b3be0; margin-right: 5pt; }
+
+.folha { width: 100%; border-collapse: collapse; }
+.folha > tbody > tr > td, .folha > tfoot > tr > td { padding: 0; }
+
+.rodape-doc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10pt;
+  border-top: 1px solid #e6e9f6;
+  margin: 0 16mm;
+  padding: 5pt 0 6pt;
+  font-size: 7.5pt;
+  color: #696f8d;
+}
+
+.palco-documento { position: relative; }
+
+@media print {
+  /* as margens da página cuidam do espaço; o rodapé mora dentro da margem de baixo */
+  @page { size: A4; margin: 15mm 15mm 19mm; }
+  html, body { background: #fff; }
+  .nao-imprime { display: none !important; }
+  .palco-impressao { position: static !important; transform: none !important; box-shadow: none !important; width: auto !important; }
+  .documento { width: auto; min-height: 0; padding: 0; box-shadow: none; margin: 0; }
+  .rodape-doc { margin: 0; padding-top: 4pt; }
+  .folha > tfoot { display: table-footer-group; }
+  .quebra-antes { break-before: page; padding-top: 0; }
+  .documento h2, .documento h3 { break-after: avoid; }
+  .doc-tabela tr { break-inside: avoid; }
+  .clausula { break-inside: avoid; }
+}
