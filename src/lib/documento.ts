@@ -25,27 +25,34 @@ const ou = (valor: string, marcador: string) => (valor.trim() ? valor.trim() : `
 export function valores(proposta: Proposta, empresa: Empresa, c: Calculo): Record<string, string> {
   const { plano, cliente, condicoes } = proposta;
 
-  const textoImplantacao = c.isentaImplantacao
-    ? 'Por se tratar de plano anual com 20 usuários ou mais, a implantação é isenta.'
-    : c.implantacao > 0
-      ? `O valor de ${brl(c.implantacao)} é devido uma única vez, no primeiro pagamento.`
+  const textoImplantacao = c.implantacaoBonificada
+    ? `O valor de ${brl(c.implantacaoValor)} está bonificado nesta proposta e não será cobrado.`
+    : c.implantacaoCobrada > 0
+      ? `O valor de ${brl(c.implantacaoCobrada)} é devido uma única vez, no primeiro pagamento.`
       : 'A implantação não foi incluída nesta contratação.';
 
-  const textoWhiteLabel = plano.incluirWhiteLabel
-    ? `Ao valor por usuário soma-se ${brl(c.whiteLabel)} por mês referente ao módulo de marca própria.`
-    : '';
+  const textoWhiteLabel = !plano.incluirWhiteLabel
+    ? ''
+    : c.whiteLabelBonificado
+      ? `O módulo de marca própria, de ${brl(c.whiteLabelValor)} por mês, está bonificado nesta proposta.`
+      : `Ao valor por usuário soma-se ${brl(c.whiteLabelCobrado)} por mês referente ao módulo de marca própria.`;
 
   const textoCiclo =
-    plano.ciclo === 'anual'
-      ? `O pagamento é anual e antecipado, no valor de ${brl(c.anualAVista)}, já considerado o desconto de 15% para pagamento à vista, com vencimento no dia ${condicoes.diaVencimento} e renovação a cada 12 meses.`
-      : `O pagamento é mensal, no valor de ${brl(c.recorrenteMensal)}, com vencimento todo dia ${condicoes.diaVencimento} de cada mês, por ${condicoes.formaPagamento.toLowerCase()}.`;
+    plano.ciclo === 'prazo'
+      ? `O pagamento é mensal, no valor de ${brl(c.recorrenteMensal)}, com vencimento todo dia ${condicoes.diaVencimento} de cada mês, por ${condicoes.formaPagamento.toLowerCase()}. O valor por usuário considera o compromisso de permanência de ${c.vigenciaMeses} meses previsto na cláusula de prazo.`
+      : `O pagamento é mensal, no valor de ${brl(c.recorrenteMensal)}, com vencimento todo dia ${condicoes.diaVencimento} de cada mês, por ${condicoes.formaPagamento.toLowerCase()}, sem compromisso de permanência.`;
+
+  const textoFidelidade =
+    plano.ciclo === 'prazo'
+      ? `A CONTRATANTE compromete-se a manter a contratação pelo prazo de ${c.vigenciaMeses} meses, condição que sustenta o valor por usuário praticado nesta proposta. O encerramento antes desse prazo, por iniciativa da CONTRATANTE e sem justa causa, implica a cobrança da diferença entre o valor pago e o valor da tabela sem compromisso de permanência, aplicada aos meses já utilizados.`
+      : 'Não há compromisso de permanência. A CONTRATANTE pode encerrar o contrato ao fim de qualquer mês, mediante o aviso prévio previsto nesta cláusula.';
 
   return {
     MARCA: empresa.marca,
     PLATAFORMA_URL: empresa.plataformaUrl,
     NUMERO: proposta.numero,
     DATA_EXTENSO: porExtenso(proposta.criadoEm),
-    VIGENCIA_MESES: String(plano.vigenciaMeses),
+    VIGENCIA_MESES: String(c.vigenciaMeses),
     FORO: ou(empresa.foro, 'PREENCHER: foro'),
     CONTRATADA_RAZAO: ou(empresa.razaoSocial, 'PREENCHER: razão social da contratada'),
     CONTRATADA_CNPJ: ou(empresa.cnpj, 'PREENCHER: CNPJ da contratada'),
@@ -56,10 +63,13 @@ export function valores(proposta: Proposta, empresa: Empresa, c: Calculo): Recor
     USUARIOS: String(c.usuarios),
     VALOR_POR_USUARIO: brl(c.porUsuario),
     VALOR_MENSAL: brl(c.mensalidade),
+    VALOR_RECORRENTE: brl(c.recorrenteMensal),
+    TOTAL_PERIODO: brl(c.totalVigencia),
     PRIMEIRO_PAGAMENTO: brl(c.primeiroPagamento),
     TEXTO_IMPLANTACAO: textoImplantacao,
     TEXTO_WHITE_LABEL_PRECO: textoWhiteLabel,
     TEXTO_CICLO_PAGAMENTO: textoCiclo,
+    TEXTO_FIDELIDADE: textoFidelidade,
   };
 }
 

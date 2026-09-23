@@ -14,7 +14,7 @@ import {
   salvarProposta,
 } from './lib/armazenamento';
 import { dataCurta } from './lib/documento';
-import { brl, calcular } from './lib/preco';
+import { brl, calcular, MESES_MINIMOS_PRAZO } from './lib/preco';
 import { propostaNova, type Proposta } from './lib/tipos';
 
 type Aba = 'editor' | 'lista' | 'config';
@@ -172,10 +172,10 @@ export default function App() {
                 <p className="font-display text-[20px] font-bold">{proposta.numero}</p>
               </div>
               <div className="text-right">
-                <p className="rotulo-secao">{proposta.plano.ciclo === 'anual' ? 'anual à vista' : 'por mês'}</p>
-                <p className="font-display text-[24px] font-extrabold text-iris">
-                  {brl(proposta.plano.ciclo === 'anual' ? calculo.anualAVista : calculo.recorrenteMensal)}
+                <p className="rotulo-secao">
+                  por mês {proposta.plano.ciclo === 'prazo' ? `· ${calculo.vigenciaMeses} meses` : '· sem fidelidade'}
                 </p>
+                <p className="font-display text-[24px] font-extrabold text-iris">{brl(calculo.recorrenteMensal)}</p>
               </div>
               <label className="rotulo-campo w-full">
                 Situação
@@ -200,14 +200,20 @@ export default function App() {
               <p>
                 {calculo.usuarios} usuários na faixa {calculo.faixa.rotulo}, a {brl(calculo.porUsuario)} por usuário ao
                 mês, dão {brl(calculo.mensalidade)} por mês
-                {calculo.whiteLabel > 0 && ` mais ${brl(calculo.whiteLabel)} de marca própria`}.
-                {proposta.plano.ciclo === 'anual'
-                  ? ` No anual à vista, ${brl(calculo.anualAVista)} por ano, uma economia de ${brl(calculo.economiaAnual)}.`
-                  : ` Em 12 meses, ${brl(calculo.recorrenteMensal * 12)}.`}
-                {calculo.implantacao > 0 && ` A implantação de ${brl(calculo.implantacao)} entra uma única vez.`}
-                {calculo.isentaImplantacao && ' A implantação saiu isenta pela regra do plano anual.'}
+                {calculo.whiteLabelCobrado > 0 && ` mais ${brl(calculo.whiteLabelCobrado)} de marca própria`}.
+                {proposta.plano.ciclo === 'prazo'
+                  ? ` Fechando ${calculo.vigenciaMeses} meses, o total do período é ${brl(calculo.totalVigencia)}, com economia de ${brl(calculo.economiaPeriodoPeloPrazo)} em relação ao mensal sem fidelidade.`
+                  : ` No mensal sem fidelidade. Fechando ${MESES_MINIMOS_PRAZO} meses, o valor por usuário cairia para ${brl(calculo.faixa.prazo)}.`}
+                {calculo.implantacaoCobrada > 0 && ` A implantação de ${brl(calculo.implantacaoCobrada)} entra uma única vez.`}
+                {calculo.implantacaoBonificada && ` A implantação de ${brl(calculo.implantacaoValor)} está bonificada.`}
+                {calculo.whiteLabelBonificado && ` A marca própria de ${brl(calculo.whiteLabelValor)} por mês está bonificada.`}
               </p>
               <p className="mt-2 font-medium text-ink">Primeiro pagamento: {brl(calculo.primeiroPagamento)}</p>
+              {calculo.bonificadoTotal > 0 && (
+                <p className="mt-1 text-[13px] text-iris-d">
+                  Bonificado nesta proposta: {brl(calculo.bonificadoTotal)}
+                </p>
+              )}
             </div>
           </div>
 
@@ -280,7 +286,12 @@ export default function App() {
                         <td className="px-5 py-3 font-mono text-[13px]">{p.numero}</td>
                         <td className="px-3 py-3">{p.cliente.nomeFantasia || p.cliente.razaoSocial || 'sem cliente'}</td>
                         <td className="px-3 py-3">{c.usuarios}</td>
-                        <td className="px-3 py-3">{brl(p.plano.ciclo === 'anual' ? c.anualAVista : c.recorrenteMensal)}</td>
+                        <td className="px-3 py-3">
+                          {brl(c.recorrenteMensal)}
+                          <span className="block text-[12px] text-txt-3">
+                            {p.plano.ciclo === 'prazo' ? `por mês · ${c.vigenciaMeses} meses` : 'por mês · sem fidelidade'}
+                          </span>
+                        </td>
                         <td className="px-3 py-3">
                           <span className="rounded-full px-3 py-1 text-[12px]" style={{ background: STATUS[p.status].cor }}>
                             {STATUS[p.status].rotulo}

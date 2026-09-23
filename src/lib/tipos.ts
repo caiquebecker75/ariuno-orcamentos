@@ -27,8 +27,10 @@ export type Proposta = {
     motivoDesconto: string;
     incluirImplantacao: boolean;
     valorImplantacao: number;
+    implantacaoBonificada: boolean;
     incluirWhiteLabel: boolean;
     valorWhiteLabel: number;
+    whiteLabelBonificado: boolean;
     vigenciaMeses: number;
   };
   condicoes: {
@@ -62,17 +64,19 @@ export function propostaNova(numero: string, responsavel: Proposta['responsavel'
     status: 'rascunho',
     cliente: { ...clienteVazio },
     plano: {
-      usuarios: 20,
-      ciclo: 'mensal',
+      usuarios: 10,
+      ciclo: 'prazo',
       precoManual: false,
       precoPorUsuario: null,
       descontoPercentual: 0,
       motivoDesconto: '',
       incluirImplantacao: true,
       valorImplantacao: 3900,
+      implantacaoBonificada: false,
       incluirWhiteLabel: false,
       valorWhiteLabel: 690,
-      vigenciaMeses: 12,
+      whiteLabelBonificado: false,
+      vigenciaMeses: 6,
     },
     condicoes: {
       validadeDias: 15,

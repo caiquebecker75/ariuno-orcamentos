@@ -1,4 +1,4 @@
-import { faixaDe, FAIXAS, brl, type Calculo } from '../lib/preco';
+import { faixaDe, FAIXAS, brl, MESES_MINIMOS_PRAZO, type Calculo } from '../lib/preco';
 import type { Proposta } from '../lib/tipos';
 import { Area, Chave, Grupo, Numero, Texto } from './campos';
 
@@ -44,55 +44,86 @@ export default function Formulario({
             <input
               id="usuarios"
               type="range"
-              min={5}
-              max={200}
-              value={Math.min(200, proposta.plano.usuarios)}
+              min={1}
+              max={60}
+              value={Math.min(60, proposta.plano.usuarios)}
               onChange={(e) => mudarPlano('usuarios', Number(e.target.value))}
               className="h-[26px] flex-1 accent-[#6A5CFF]"
             />
             <input
               type="number"
-              min={5}
+              min={1}
               value={proposta.plano.usuarios}
               onChange={(e) => mudarPlano('usuarios', Number(e.target.value))}
               className="campo w-[92px] text-center"
             />
           </div>
           <p className="mt-2 text-[13px] text-txt-2">
-            Faixa {faixa.rotulo} · tabela {brl(calculo.tabela)} por usuário ao mês
-            {calculo.usuarios !== proposta.plano.usuarios && ' · mínimo de 5 usuários'}
+            Faixa {faixa.rotulo} · {brl(faixa.prazo)} com prazo · {brl(faixa.mensal)} no mensal
           </p>
         </div>
 
         <div className="sm:col-span-2">
-          <span className="rotulo-campo">Ciclo de pagamento</span>
-          <div className="flex gap-2">
-            {(['mensal', 'anual'] as const).map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => mudarPlano('ciclo', c)}
-                className="flex-1 rounded-[10px] px-4 py-3 text-[14px] font-medium transition-colors"
-                style={{
-                  background: proposta.plano.ciclo === c ? 'var(--color-ink)' : 'var(--color-paper)',
-                  color: proposta.plano.ciclo === c ? '#fff' : 'var(--color-txt-2)',
-                }}
-              >
-                {c === 'mensal' ? 'Mensal' : 'Anual à vista (menos 15%)'}
-              </button>
-            ))}
+          <span className="rotulo-campo">Como o cliente vai contratar</span>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {([
+              ['prazo', `Com prazo de ${proposta.plano.vigenciaMeses} meses`, faixa.prazo, `a partir de ${MESES_MINIMOS_PRAZO} meses`],
+              ['mensal', 'Mensal', faixa.mensal, 'sem compromisso de permanência'],
+            ] as const).map(([chave, titulo, preco, detalhe]) => {
+              const ativo = proposta.plano.ciclo === chave;
+              return (
+                <button
+                  key={chave}
+                  type="button"
+                  onClick={() => {
+                    const ajustes: Partial<Proposta['plano']> = { ciclo: chave };
+                    if (chave === 'prazo' && proposta.plano.vigenciaMeses < MESES_MINIMOS_PRAZO) {
+                      ajustes.vigenciaMeses = MESES_MINIMOS_PRAZO;
+                    }
+                    aoMudar({ ...proposta, plano: { ...proposta.plano, ...ajustes } });
+                  }}
+                  className="rounded-[12px] px-4 py-3 text-left transition-colors"
+                  style={{
+                    background: ativo ? 'var(--color-ink)' : 'var(--color-paper)',
+                    color: ativo ? '#fff' : 'var(--color-txt-2)',
+                  }}
+                >
+                  <span className="block text-[14px] font-bold">{titulo}</span>
+                  <span className="mt-1 block font-display text-[19px] font-extrabold" style={{ color: ativo ? 'var(--color-lime)' : 'var(--color-ink)' }}>
+                    {brl(preco)}
+                  </span>
+                  <span className="block text-[12px] opacity-70">por usuário ao mês · {detalhe}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <Numero rotulo="Vigência" valor={proposta.plano.vigenciaMeses} aoMudar={(v) => mudarPlano('vigenciaMeses', v)} min={1} max={60} sufixo="meses" />
+        <Numero
+          rotulo={proposta.plano.ciclo === 'prazo' ? 'Prazo contratado' : 'Vigência do contrato'}
+          valor={proposta.plano.vigenciaMeses}
+          aoMudar={(v) => mudarPlano('vigenciaMeses', v)}
+          min={proposta.plano.ciclo === 'prazo' ? MESES_MINIMOS_PRAZO : 1}
+          max={60}
+          sufixo="meses"
+        />
         <Numero rotulo="Desconto comercial" valor={proposta.plano.descontoPercentual} aoMudar={(v) => mudarPlano('descontoPercentual', v)} min={0} max={100} passo={0.5} sufixo="%" />
         <Texto rotulo="Motivo do desconto (uso interno, não sai no PDF)" valor={proposta.plano.motivoDesconto} aoMudar={(v) => mudarPlano('motivoDesconto', v)} />
 
         <Chave
           rotulo="Preço por usuário definido na mão"
           ativo={proposta.plano.precoManual}
-          aoMudar={(v) => mudarPlano('precoManual', v)}
-          detalhe={`Sem isso, o valor vem da tabela progressiva: ${FAIXAS.map((f) => `${f.de}+ ${brl(f.preco)}`).join(' · ')}`}
+          aoMudar={(v) =>
+            aoMudar({
+              ...proposta,
+              plano: {
+                ...proposta.plano,
+                precoManual: v,
+                precoPorUsuario: v ? (proposta.plano.precoPorUsuario ?? calculo.tabela) : proposta.plano.precoPorUsuario,
+              },
+            })
+          }
+          detalhe={`Sem isso vale a tabela: ${FAIXAS.map((f) => `${f.rotulo} ${brl(f.prazo)} / ${brl(f.mensal)}`).join(' · ')}`}
         />
         {proposta.plano.precoManual && (
           <Numero
@@ -109,10 +140,18 @@ export default function Formulario({
           rotulo="Cobrar implantação, migração e treinamento"
           ativo={proposta.plano.incluirImplantacao}
           aoMudar={(v) => mudarPlano('incluirImplantacao', v)}
-          detalhe={calculo.isentaImplantacao ? 'Isenta automaticamente: plano anual com 20 usuários ou mais' : 'Valor cobrado uma única vez, junto do primeiro pagamento'}
+          detalhe="Valor cobrado uma única vez, junto do primeiro pagamento"
         />
-        {proposta.plano.incluirImplantacao && !calculo.isentaImplantacao && (
-          <Numero rotulo="Valor da implantação" valor={proposta.plano.valorImplantacao} aoMudar={(v) => mudarPlano('valorImplantacao', v)} min={0} passo={100} sufixo="uma vez" />
+        {proposta.plano.incluirImplantacao && (
+          <>
+            <Numero rotulo="Valor da implantação" valor={proposta.plano.valorImplantacao} aoMudar={(v) => mudarPlano('valorImplantacao', v)} min={0} passo={100} sufixo="uma vez" />
+            <Chave
+              rotulo="Implantação bonificada"
+              ativo={proposta.plano.implantacaoBonificada}
+              aoMudar={(v) => mudarPlano('implantacaoBonificada', v)}
+              detalhe="O valor aparece na proposta com o selo de bonificado, e não entra na soma"
+            />
+          </>
         )}
 
         <Chave
@@ -122,7 +161,15 @@ export default function Formulario({
           detalhe="A plataforma com a marca, as cores e o domínio do cliente"
         />
         {proposta.plano.incluirWhiteLabel && (
-          <Numero rotulo="Valor do white-label" valor={proposta.plano.valorWhiteLabel} aoMudar={(v) => mudarPlano('valorWhiteLabel', v)} min={0} passo={10} sufixo="por mês" />
+          <>
+            <Numero rotulo="Valor do white-label" valor={proposta.plano.valorWhiteLabel} aoMudar={(v) => mudarPlano('valorWhiteLabel', v)} min={0} passo={10} sufixo="por mês" />
+            <Chave
+              rotulo="Marca própria bonificada"
+              ativo={proposta.plano.whiteLabelBonificado}
+              aoMudar={(v) => mudarPlano('whiteLabelBonificado', v)}
+              detalhe="Aparece na proposta como bonificado, sem entrar na mensalidade"
+            />
+          </>
         )}
       </Grupo>
 

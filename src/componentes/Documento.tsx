@@ -7,10 +7,10 @@ import { Logotipo, Marca } from './Marca';
 
 const INCLUSO = [
   'Todos os módulos, sem funcionalidade trancada em plano superior',
-  'Usuários do tipo cliente ilimitados e sem custo',
-  'Quadros, Gantt, calendário, horas, capacidade e aprovações',
-  'Relatório do cliente em link e em PDF, e financeiro com margem',
-  'Ariuno IA, Arena, novas funcionalidades e suporte em português',
+  'Usuários do tipo cliente ilimitados e sem custo, para acompanhar e aprovar',
+  'Quadros, Gantt, calendário, horas, capacidade, aprovações e portal do cliente',
+  'Relatório do cliente, financeiro com margem, Ariuno IA e Arena',
+  'Novas funcionalidades e suporte em português durante toda a vigência',
 ];
 
 
@@ -84,7 +84,7 @@ export default function Documento({
 }) {
   const { cliente, plano, condicoes, responsavel } = proposta;
   const mapa = valores(proposta, empresa, calculo);
-  const anual = plano.ciclo === 'anual';
+  const comPrazo = plano.ciclo === 'prazo';
   const clausulasAtivas = clausulas.filter((c) => (c.quando === 'whiteLabel' ? plano.incluirWhiteLabel : true));
 
   return (
@@ -111,14 +111,13 @@ export default function Documento({
           <br />
           para {cliente.nomeFantasia || cliente.razaoSocial || '[cliente]'}
         </h1>
-        <p style={{ marginTop: '5pt', color: '#4d5472', maxWidth: '150mm', fontSize: '9.5pt' }}>
-          A operação inteira num sistema só, do briefing à nota fiscal: quadros, prazos, horas, aprovação do
-          cliente, relatórios e financeiro. Esta proposta considera {calculo.usuarios} usuários ativos e vigência de{' '}
-          {plano.vigenciaMeses} meses.
+        <p style={{ marginTop: '4pt', color: '#4d5472', maxWidth: '165mm', fontSize: '9pt' }}>
+          A operação inteira num sistema só, do briefing à nota fiscal. Proposta para {calculo.usuarios} usuários
+          ativos, {comPrazo ? `com prazo de ${calculo.vigenciaMeses} meses` : 'no plano mensal'}.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9pt', margin: '11pt 0' }}>
-          <div style={{ background: '#f7f8fd', borderRadius: '8pt', padding: '8pt 10pt' }}>
+          <div style={{ background: '#f7f8fd', borderRadius: '8pt', padding: '7pt 9pt' }}>
             <p className="mono" style={{ margin: 0, fontSize: '7.5pt', letterSpacing: '0.1em', color: '#696f8d' }}>
               PREPARADA PARA
             </p>
@@ -136,19 +135,22 @@ export default function Documento({
               {cliente.contatoEmail} {cliente.contatoTelefone ? `· ${cliente.contatoTelefone}` : ''}
             </p>
           </div>
-          <div style={{ background: '#0b0d1e', color: '#fff', borderRadius: '8pt', padding: '8pt 10pt' }}>
+          <div style={{ background: '#0b0d1e', color: '#fff', borderRadius: '8pt', padding: '7pt 9pt' }}>
             <p className="mono" style={{ margin: 0, fontSize: '7.5pt', letterSpacing: '0.1em', color: 'rgb(255 255 255 / 0.55)' }}>
-              INVESTIMENTO {anual ? 'ANUAL À VISTA' : 'MENSAL'}
+              INVESTIMENTO MENSAL
             </p>
-            <p style={{ margin: '4pt 0 0', fontFamily: 'Archivo, sans-serif', fontSize: '24pt', fontWeight: 800, letterSpacing: '-0.03em' }}>
-              {brl(anual ? calculo.anualAVista : calculo.recorrenteMensal)}
+            <p style={{ margin: '4pt 0 0', fontFamily: 'Archivo, sans-serif', fontSize: '22pt', fontWeight: 800, letterSpacing: '-0.03em' }}>
+              {brl(calculo.recorrenteMensal)}
             </p>
             <p style={{ margin: '2pt 0 0', fontSize: '9pt', color: 'rgb(255 255 255 / 0.7)' }}>
               {brl(calculo.porUsuario)} por usuário ao mês · {calculo.usuarios} usuários
             </p>
-            {anual && (
-              <p style={{ margin: '5pt 0 0', fontSize: '9pt', color: '#c0ee4e' }}>
-                economia de {brl(calculo.economiaAnual)} no ano
+            <p style={{ margin: '3pt 0 0', fontSize: '8.5pt', color: 'rgb(255 255 255 / 0.7)' }}>
+              {comPrazo ? `contrato de ${calculo.vigenciaMeses} meses` : 'mensal, sem compromisso de permanência'}
+            </p>
+            {comPrazo && calculo.economiaMensalPeloPrazo > 0 && (
+              <p style={{ margin: '4pt 0 0', fontSize: '9pt', color: '#c0ee4e' }}>
+                economia de {brl(calculo.economiaPeriodoPeloPrazo)} no período, contra o mensal
               </p>
             )}
             {calculo.descontoPercentual > 0 && (
@@ -187,33 +189,45 @@ export default function Documento({
             {plano.incluirWhiteLabel && (
               <tr>
                 <td>Marca própria (white-label)</td>
-                <td>Sua marca e seu domínio na plataforma</td>
-                <td style={{ textAlign: 'right' }}>{brl(calculo.whiteLabel)} / mês</td>
+                <td>
+                  Sua marca e seu domínio na plataforma
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  {calculo.whiteLabelBonificado ? (
+                    <>
+                      <span style={{ textDecoration: 'line-through', color: '#8a90ac' }}>{brl(calculo.whiteLabelValor)}</span>{' '}
+                      <strong style={{ color: '#4b3be0' }}>bonificado</strong>
+                    </>
+                  ) : (
+                    `${brl(calculo.whiteLabelValor)} / mês`
+                  )}
+                </td>
               </tr>
             )}
             <tr>
               <td>Implantação, migração e treinamento</td>
               <td>
                 Descoberta, configuração, migração, treinamento e go-live em 21 dias
-                {calculo.isentaImplantacao && (
-                  <>
-                    <br />
-                    <span style={{ color: '#0e8a6a' }}>isenta no plano anual a partir de 20 usuários</span>
-                  </>
-                )}
               </td>
               <td style={{ textAlign: 'right' }}>
-                {calculo.implantacao > 0 ? `${brl(calculo.implantacao)} uma vez` : 'isenta'}
+                {calculo.implantacaoBonificada ? (
+                  <>
+                    <span style={{ textDecoration: 'line-through', color: '#8a90ac' }}>{brl(calculo.implantacaoValor)}</span>{' '}
+                    <strong style={{ color: '#4b3be0' }}>bonificada</strong>
+                  </>
+                ) : calculo.implantacaoCobrada > 0 ? (
+                  `${brl(calculo.implantacaoCobrada)} uma vez`
+                ) : (
+                  'não incluída'
+                )}
               </td>
             </tr>
-            <tr>
-              <td>Usuários do tipo cliente</td>
-              <td>Ilimitados, sem ocupar assento</td>
-              <td style={{ textAlign: 'right' }}>sem custo</td>
-            </tr>
             <tr className="doc-total">
-              <td>{anual ? 'Total do primeiro pagamento (anual à vista + implantação)' : 'Total do primeiro pagamento (1ª mensalidade + implantação)'}</td>
-              <td>{anual ? 'renovação a cada 12 meses' : `recorrência de ${brl(calculo.recorrenteMensal)} por mês`}</td>
+              <td>Total do primeiro pagamento (1ª mensalidade{calculo.implantacaoCobrada > 0 ? ' + implantação' : ''})</td>
+              <td>
+                recorrência de {brl(calculo.recorrenteMensal)} por mês
+                {comPrazo && ` · total de ${brl(calculo.totalVigencia)} no contrato de ${calculo.vigenciaMeses} meses`}
+              </td>
               <td style={{ textAlign: 'right' }}>{brl(calculo.primeiroPagamento)}</td>
             </tr>
           </tbody>
@@ -230,17 +244,21 @@ export default function Documento({
           </div>
           <div>
             <h2>Condições</h2>
-            <div style={{ display: 'grid', gap: '6pt' }}>
-              <Campo rotulo="Vigência" valor={`${plano.vigenciaMeses} meses, sem fidelidade além do período`} />
-              <Campo rotulo="Pagamento" valor={`${anual ? 'Anual à vista' : 'Mensal'} · ${condicoes.formaPagamento} · dia ${condicoes.diaVencimento}`} />
-              <Campo rotulo="Reajuste e início" valor="IPCA a cada 12 meses · implantação em até 5 dias úteis do aceite" />
+            <div style={{ display: 'grid', gap: '5pt' }}>
+              <Campo
+                rotulo="Contratação"
+                valor={comPrazo ? `${calculo.vigenciaMeses} meses de permanência` : 'Mensal, sem compromisso de permanência'}
+              />
+              <Campo rotulo="Pagamento" valor={`Mensal · ${condicoes.formaPagamento} · dia ${condicoes.diaVencimento}`} />
+              <Campo rotulo="Reajuste" valor="IPCA a cada 12 meses de vigência" />
+              <Campo rotulo="Liberação" valor="Acessos liberados após a confirmação do primeiro pagamento" />
               <Campo rotulo="Validade desta proposta" valor={`${condicoes.validadeDias} dias, até ${validadeEm(proposta.criadoEm, condicoes.validadeDias)}`} />
             </div>
           </div>
         </div>
 
         {condicoes.observacoes.trim() && (
-          <div className="bloco-fecho" style={{ marginTop: '10pt', background: '#f7f8fd', borderRadius: '8pt', padding: '8pt 10pt' }}>
+          <div className="bloco-fecho" style={{ marginTop: '10pt', background: '#f7f8fd', borderRadius: '8pt', padding: '7pt 9pt' }}>
             <p className="mono" style={{ margin: 0, fontSize: '7.5pt', letterSpacing: '0.1em', color: '#696f8d' }}>
               OBSERVAÇÕES
             </p>
@@ -252,7 +270,15 @@ export default function Documento({
           <Marca tamanho={22} />
           <p style={{ margin: 0, fontSize: '8.5pt', color: '#3d4360' }}>
             Para aceitar, responda este documento assinado. O contrato nas páginas seguintes passa a valer com a
-            assinatura das duas partes.
+            assinatura das duas partes, e os acessos são liberados após a confirmação do primeiro pagamento.
+            {calculo.bonificadoTotal > 0 && (
+              <>
+                {' '}
+                <strong style={{ color: '#4b3be0' }}>
+                  Bonificação nesta proposta: {brl(calculo.bonificadoTotal)}.
+                </strong>
+              </>
+            )}
             <br />
             <strong style={{ color: '#14172b' }}>
               {responsavel.nome || empresa.nomeFantasia}

@@ -52,15 +52,15 @@ export const clausulas: Clausula[] = [
     itens: [
       'A implantação compreende a configuração da plataforma conforme o fluxo de trabalho da CONTRATANTE, a criação de quadros, campos, modelos, áreas e permissões, a migração dos clientes, projetos e tarefas em andamento e o treinamento do time por função.',
       'A implantação é executada de forma conjunta e depende da colaboração da CONTRATANTE no fornecimento de informações, bases e disponibilidade de agenda. Atrasos causados pela ausência dessas providências não são imputáveis à CONTRATADA.',
-      'O prazo estimado entre a assinatura e a entrada em operação é de 21 dias corridos, distribuídos em descoberta, configuração, migração, treinamento e go-live, acompanhado pela CONTRATADA no primeiro fechamento de mês.',
+      'O prazo estimado de 21 dias corridos entre o início dos trabalhos e a entrada em operação, distribuídos em descoberta, configuração, migração, treinamento e go-live, é contado da confirmação do primeiro pagamento, e não da assinatura.',
       'O valor da implantação está descrito na proposta. {{TEXTO_IMPLANTACAO}}',
     ],
   },
   {
     titulo: 'Do prazo, da vigência e da renovação',
     itens: [
-      'Este contrato vigora pelo prazo de {{VIGENCIA_MESES}} meses, contados da data de assinatura, e é renovado automaticamente por períodos iguais e sucessivos, salvo manifestação escrita de qualquer das partes com antecedência mínima de 30 dias do término do período em curso.',
-      'Não há fidelidade além do prazo contratado. A CONTRATANTE pode encerrar o contrato ao fim de qualquer período de vigência, sem multa, observado o aviso prévio de 30 dias.',
+      'Este contrato vigora pelo prazo de {{VIGENCIA_MESES}} meses, contados da liberação dos acessos, e é renovado automaticamente por períodos iguais e sucessivos, salvo manifestação escrita de qualquer das partes com antecedência mínima de 30 dias do término do período em curso.',
+      '{{TEXTO_FIDELIDADE}}',
       'A denúncia imotivada no curso de um período já pago não gera direito à devolução dos valores correspondentes ao período em andamento, permanecendo o acesso disponível até o fim do período pago.',
     ],
   },
@@ -69,7 +69,8 @@ export const clausulas: Clausula[] = [
     itens: [
       'Pela licença de uso, a CONTRATANTE pagará à CONTRATADA o valor de {{VALOR_POR_USUARIO}} por usuário ativo ao mês, totalizando {{VALOR_MENSAL}} por mês para os {{USUARIOS}} usuários contratados. {{TEXTO_WHITE_LABEL_PRECO}}',
       '{{TEXTO_CICLO_PAGAMENTO}}',
-      'O primeiro pagamento, no valor de {{PRIMEIRO_PAGAMENTO}}, vence em até 5 dias úteis da assinatura e libera o início da implantação.',
+      'O primeiro pagamento, no valor de {{PRIMEIRO_PAGAMENTO}}, vence em até 5 dias úteis da assinatura.',
+      'A liberação dos acessos à plataforma e o início da implantação ficam condicionados à confirmação do recebimento do primeiro pagamento. Enquanto esse pagamento não for confirmado, nenhum prazo deste contrato começa a correr.',
       'Os valores são reajustados a cada 12 meses de vigência pela variação positiva do IPCA/IBGE acumulado no período, ou pelo índice que o substituir na sua falta.',
       'O atraso no pagamento sujeita a CONTRATANTE a multa de 2% sobre o valor em aberto, juros de mora de 1% ao mês, pro rata die, e correção pelo mesmo índice previsto no item anterior.',
       'O atraso superior a 15 dias autoriza a suspensão do acesso à plataforma, mediante aviso prévio de 5 dias, mantidos os dados da CONTRATANTE preservados durante a suspensão. O atraso superior a 60 dias autoriza a rescisão por justa causa.',
@@ -80,8 +81,8 @@ export const clausulas: Clausula[] = [
     titulo: 'Da alteração do número de usuários',
     itens: [
       'A CONTRATANTE pode incluir novos usuários a qualquer tempo, pela própria plataforma ou mediante solicitação, com cobrança proporcional aos dias restantes do ciclo em curso.',
-      'A inclusão de usuários que leve a contratação a uma faixa superior da tabela progressiva passa a valer com o preço da nova faixa para a totalidade dos usuários da conta, a partir do ciclo seguinte.',
-      'A redução do número de usuários tem efeito no ciclo seguinte ao pedido e respeita o mínimo de 5 usuários ativos. A redução não gera devolução de valores do ciclo em andamento.',
+      'A inclusão de usuários que leve a contratação a outra faixa da tabela passa a valer com o preço da nova faixa para a totalidade dos usuários da conta, a partir do ciclo seguinte.',
+      'A redução do número de usuários tem efeito no ciclo seguinte ao pedido e pode levar a contratação a uma faixa de preço superior por usuário, conforme a tabela vigente. A redução não gera devolução de valores do ciclo em andamento.',
     ],
   },
   {

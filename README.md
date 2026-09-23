@@ -20,28 +20,42 @@ aplica desconto e gera o PDF com a proposta e o contrato de licença de uso.
 
 ## Como o valor é calculado
 
-Tabela progressiva por usuário ativo, a mesma do site:
+Tabela por faixa de usuários, com dois preços em cada faixa: um para quem fecha com
+prazo (a partir de 6 meses) e outro para quem fica no mensal, sem compromisso de
+permanência.
 
-| Faixa | Por usuário ao mês |
-|---|---|
-| 5 a 9 | R$ 119 |
-| 10 a 19 | R$ 99 |
-| 20 a 39 | R$ 87 |
-| 40 a 79 | R$ 75 |
-| 80 a 149 | R$ 64 |
-| 150 ou mais | R$ 54 |
+| Faixa | Com prazo | Mensal |
+|---|---|---|
+| até 5 usuários | R$ 179 | R$ 199 |
+| 6 a 10 usuários | R$ 159 | R$ 179 |
+| 11 a 15 usuários | R$ 139 | R$ 159 |
+| acima de 15 usuários | R$ 119 | R$ 139 |
 
-Sobre isso a ferramenta aplica, nesta ordem:
+Na tela, as duas opções aparecem lado a lado com o valor de cada uma, para o vendedor
+mostrar a diferença na hora. Escolhendo prazo, o campo de meses fica disponível com
+mínimo de 6, e a proposta passa a exibir a economia do período contra o mensal.
+
+Sobre esse valor a ferramenta aplica:
 
 - **desconto comercial** em porcentagem, que incide no valor por usuário;
 - **marca própria (white-label)**, somada como valor mensal fixo;
-- **ciclo anual à vista**, com 15% de desconto sobre os 12 meses;
-- **implantação**, cobrada uma única vez e **isenta automaticamente** no plano anual a
-  partir de 20 usuários;
-- o **mínimo de 5 usuários** é aplicado mesmo se você digitar menos.
+- **implantação**, cobrada uma única vez;
+- **preço por usuário digitado na mão**, para negociação fora da tabela.
 
-O campo *preço por usuário definido na mão* existe para negociações fora da tabela. Ele
-substitui o valor da faixa, e o desconto em porcentagem continua valendo por cima dele.
+### Bonificado
+
+A implantação e a marca própria têm a opção **bonificada**. Marcando a caixa, o item
+continua aparecendo na proposta com o valor riscado e a palavra *bonificada* ao lado,
+mas não entra em nenhuma soma. No fim da proposta sai a linha
+"Bonificação nesta proposta: R$ X", que é o total do que o cliente deixou de pagar.
+Serve para mostrar valor sem cobrar.
+
+### Liberação só depois do pagamento
+
+A regra está na proposta, em Condições, e no contrato em duas cláusulas: os acessos e o
+início da implantação ficam condicionados à confirmação do primeiro pagamento, e os
+prazos só começam a correr a partir daí. A vigência conta da liberação dos acessos, não
+da assinatura.
 
 ## O contrato que sai no PDF
 
@@ -53,6 +67,11 @@ crédito por indisponibilidade, suporte, obrigações das duas partes, proprieda
 intelectual, titularidade dos dados, LGPD com papéis de controlador e operador,
 segurança, confidencialidade, limitação de responsabilidade, rescisão, devolução e
 eliminação de dados, marca própria, anticorrupção, disposições gerais e foro.
+
+A cláusula de prazo muda conforme a contratação: no plano com prazo, entra o compromisso
+de permanência e a consequência de encerrar antes (cobrança da diferença para a tabela
+sem fidelidade nos meses já usados); no mensal, entra a permissão de encerrar ao fim de
+qualquer mês.
 
 O texto é preenchido sozinho com os dados da negociação: valor por usuário, valor mensal,
 primeiro pagamento, número de usuários, vigência, forma de pagamento e dia de vencimento.

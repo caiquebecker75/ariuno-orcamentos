@@ -65,9 +65,9 @@
 .documento p { margin: 0 0 7pt; }
 .documento .mono { font-family: var(--font-mono); }
 
-.doc-tabela { width: 100%; border-collapse: collapse; font-size: 10pt; }
-.doc-tabela th { text-align: left; padding: 5pt 8pt; background: #0b0d1e; color: #fff; font-weight: 600; }
-.doc-tabela td { padding: 5pt 8pt; border-bottom: 1px solid #e6e9f6; vertical-align: top; }
+.doc-tabela { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+.doc-tabela th { text-align: left; padding: 4pt 7pt; background: #0b0d1e; color: #fff; font-weight: 600; }
+.doc-tabela td { padding: 4.5pt 7pt; border-bottom: 1px solid #e6e9f6; vertical-align: top; }
 .doc-tabela tr:last-child td { border-bottom: none; }
 .doc-total td { background: #eaedf9; font-weight: 700; }
 

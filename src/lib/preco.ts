@@ -1,21 +1,22 @@
-/** Tabela progressiva por usuário ativo, a mesma publicada no site do Ariuno. */
+/**
+ * Tabela de preços do Ariuno por faixa de usuários.
+ * Cada faixa tem dois preços: um para quem fecha com prazo (a partir de 6 meses)
+ * e outro para quem fica no mensal, sem compromisso de permanência.
+ */
 export const FAIXAS = [
-  { de: 5, ate: 9, preco: 119, rotulo: '5 a 9 usuários' },
-  { de: 10, ate: 19, preco: 99, rotulo: '10 a 19 usuários' },
-  { de: 20, ate: 39, preco: 87, rotulo: '20 a 39 usuários' },
-  { de: 40, ate: 79, preco: 75, rotulo: '40 a 79 usuários' },
-  { de: 80, ate: 149, preco: 64, rotulo: '80 a 149 usuários' },
-  { de: 150, ate: 99999, preco: 54, rotulo: '150 usuários ou mais' },
+  { de: 1, ate: 5, rotulo: 'até 5 usuários', prazo: 179, mensal: 199 },
+  { de: 6, ate: 10, rotulo: '6 a 10 usuários', prazo: 159, mensal: 179 },
+  { de: 11, ate: 15, rotulo: '11 a 15 usuários', prazo: 139, mensal: 159 },
+  { de: 16, ate: 99999, rotulo: 'acima de 15 usuários', prazo: 119, mensal: 139 },
 ] as const;
 
-export const MINIMO_USUARIOS = 5;
-export const DESCONTO_ANUAL = 0.15;
+/** Prazo mínimo para valer o preço com fidelidade. */
+export const MESES_MINIMOS_PRAZO = 6;
 export const IMPLANTACAO_PADRAO = 3900;
 export const WHITE_LABEL_PADRAO = 690;
-/** No plano anual, a implantação é isenta a partir desta quantidade de usuários. */
-export const USUARIOS_ISENCAO_IMPLANTACAO = 20;
 
-export type Ciclo = 'mensal' | 'anual';
+/** `prazo` = fecha por um número de meses · `mensal` = sem fidelidade */
+export type Ciclo = 'prazo' | 'mensal';
 
 export type Orcamento = {
   usuarios: number;
@@ -25,22 +26,28 @@ export type Orcamento = {
   descontoPercentual: number;
   incluirImplantacao: boolean;
   valorImplantacao: number;
+  implantacaoBonificada: boolean;
   incluirWhiteLabel: boolean;
   valorWhiteLabel: number;
+  whiteLabelBonificado: boolean;
   vigenciaMeses: number;
 };
 
 export function faixaDe(usuarios: number) {
-  const n = Math.max(MINIMO_USUARIOS, usuarios);
+  const n = Math.max(1, usuarios);
   return FAIXAS.find((f) => n >= f.de && n <= f.ate) ?? FAIXAS[FAIXAS.length - 1];
 }
+
+export const precoDaFaixa = (usuarios: number, ciclo: Ciclo) =>
+  ciclo === 'prazo' ? faixaDe(usuarios).prazo : faixaDe(usuarios).mensal;
 
 export type Calculo = ReturnType<typeof calcular>;
 
 export function calcular(o: Orcamento) {
-  const usuarios = Math.max(MINIMO_USUARIOS, Math.round(o.usuarios || 0));
+  const usuarios = Math.max(1, Math.round(o.usuarios || 0));
   const faixa = faixaDe(usuarios);
-  const tabela = faixa.preco;
+  const tabela = o.ciclo === 'prazo' ? faixa.prazo : faixa.mensal;
+  const tabelaOutroCiclo = o.ciclo === 'prazo' ? faixa.mensal : faixa.prazo;
   const cheio = o.precoManual && o.precoPorUsuario !== null ? o.precoPorUsuario : tabela;
 
   const descontoPercentual = Math.min(100, Math.max(0, o.descontoPercentual || 0));
@@ -50,46 +57,51 @@ export function calcular(o: Orcamento) {
   const mensalidade = porUsuario * usuarios;
   const descontoMensal = mensalidadeCheia - mensalidade;
 
-  const whiteLabel = o.incluirWhiteLabel ? o.valorWhiteLabel : 0;
-  const recorrenteMensal = mensalidade + whiteLabel;
+  // bonificado aparece na proposta com o valor, mas não entra na conta
+  const whiteLabelValor = o.incluirWhiteLabel ? o.valorWhiteLabel : 0;
+  const whiteLabelCobrado = o.incluirWhiteLabel && !o.whiteLabelBonificado ? o.valorWhiteLabel : 0;
+  const implantacaoValor = o.incluirImplantacao ? o.valorImplantacao : 0;
+  const implantacaoCobrada = o.incluirImplantacao && !o.implantacaoBonificada ? o.valorImplantacao : 0;
 
-  const anualSemDesconto = recorrenteMensal * 12;
-  const anualAVista = anualSemDesconto * (1 - DESCONTO_ANUAL);
-  const economiaAnual = anualSemDesconto - anualAVista;
+  const recorrenteMensal = mensalidade + whiteLabelCobrado;
+  const vigenciaMeses = Math.max(1, Math.round(o.vigenciaMeses || 1));
+  const totalVigencia = recorrenteMensal * vigenciaMeses + implantacaoCobrada;
+  const primeiroPagamento = recorrenteMensal + implantacaoCobrada;
 
-  const isentaImplantacao = o.ciclo === 'anual' && usuarios >= USUARIOS_ISENCAO_IMPLANTACAO;
-  const implantacao = o.incluirImplantacao && !isentaImplantacao ? o.valorImplantacao : 0;
+  // quanto o prazo economiza por mês em relação ao mensal sem compromisso
+  const economiaMensalPeloPrazo = o.ciclo === 'prazo' ? (tabelaOutroCiclo - tabela) * usuarios : 0;
 
-  const primeiroPagamento = o.ciclo === 'anual' ? anualAVista + implantacao : recorrenteMensal + implantacao;
-  const totalVigencia =
-    o.ciclo === 'anual'
-      ? anualAVista * (o.vigenciaMeses / 12) + implantacao
-      : recorrenteMensal * o.vigenciaMeses + implantacao;
+  const bonificadoTotal =
+    (o.incluirImplantacao && o.implantacaoBonificada ? o.valorImplantacao : 0) +
+    (o.incluirWhiteLabel && o.whiteLabelBonificado ? o.valorWhiteLabel * vigenciaMeses : 0);
 
   return {
     usuarios,
     faixa,
+    ciclo: o.ciclo,
     tabela,
+    tabelaOutroCiclo,
     cheio,
     porUsuario,
     descontoPercentual,
     mensalidadeCheia,
     mensalidade,
     descontoMensal,
-    whiteLabel,
+    whiteLabelValor,
+    whiteLabelCobrado,
+    whiteLabelBonificado: o.incluirWhiteLabel && o.whiteLabelBonificado,
+    implantacaoValor,
+    implantacaoCobrada,
+    implantacaoBonificada: o.incluirImplantacao && o.implantacaoBonificada,
     recorrenteMensal,
-    anualSemDesconto,
-    anualAVista,
-    economiaAnual,
-    isentaImplantacao,
-    implantacao,
-    primeiroPagamento,
+    vigenciaMeses,
     totalVigencia,
+    primeiroPagamento,
+    economiaMensalPeloPrazo,
+    economiaPeriodoPeloPrazo: economiaMensalPeloPrazo * vigenciaMeses,
+    bonificadoTotal,
   };
 }
 
 export const brl = (n: number) =>
   n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
-
-export const brlCurto = (n: number) =>
-  n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
