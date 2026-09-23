@@ -99,7 +99,7 @@
   @page { size: A4; margin: 15mm 15mm 19mm; }
   html, body { background: #fff; }
   .nao-imprime { display: none !important; }
-  .palco-impressao { position: static !important; transform: none !important; box-shadow: none !important; width: auto !important; }
+  .palco-impressao { position: static !important; transform: none !important; box-shadow: none !important; width: auto !important; max-width: none !important; margin: 0 !important; }
   .documento { width: auto; min-height: 0; padding: 0; box-shadow: none; margin: 0; }
   .rodape-doc { margin: 0; padding-top: 4pt; }
   .folha > tfoot { display: table-footer-group; }

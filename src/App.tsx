@@ -218,13 +218,7 @@ export default function App() {
                 {proposta.incluirContrato ? 'proposta + contrato' : 'somente a proposta'}
               </p>
             </div>
-            <div
-              style={{
-                width: 794 * escala,
-                height: 'auto',
-                margin: '0 auto',
-              }}
-            >
+            <div className="palco-impressao" style={{ width: 794 * escala, margin: '0 auto' }}>
               <div
                 style={{
                   transform: `scale(${escala})`,
