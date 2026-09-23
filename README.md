@@ -50,6 +50,23 @@ mas não entra em nenhuma soma. No fim da proposta sai a linha
 "Bonificação nesta proposta: R$ X", que é o total do que o cliente deixou de pagar.
 Serve para mostrar valor sem cobrar.
 
+### Regras comerciais que estão no contrato
+
+- **Reajuste semestral** pelo IPCA, aplicado na primeira fatura depois de fechado o semestre.
+- **Ajuste por melhoria significativa**: se a plataforma ganhar módulo, integração ou
+  recurso que amplie de verdade o escopo e aumente o custo de operação, o valor por
+  usuário pode ser ajustado com aviso de 30 dias. Se o cliente não concordar, ele encerra
+  sem multa.
+- **Encerramento antes do prazo**: multa de 30% sobre as mensalidades faltantes, em
+  parcela única. Não vale quando a culpa é da 75 LAB nem quando o cliente recusa um
+  ajuste por melhoria.
+- **Fim do contrato**: os dados ficam guardados por 15 dias para o cliente extrair pelos
+  próprios recursos da plataforma. Não há extração por API nem entrega de cópia do banco.
+  Passados os 15 dias, os dados são eliminados.
+- **Anexo I**: o cartão CNPJ da 75 LAB entra como última página e é citado nas
+  disposições gerais. A imagem fica em `public/anexos/`; para trocar por uma emissão mais
+  nova, é só substituir o arquivo.
+
 ### Liberação só depois do pagamento
 
 A regra está na proposta, em Condições, e no contrato em duas cláusulas: os acessos e o

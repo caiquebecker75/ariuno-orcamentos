@@ -1,24 +1,23 @@
 /**
- * Dados da empresa que assina o contrato e da plataforma.
- * O que estiver marcado como PREENCHER precisa ser completado uma vez, na tela
- * de Configurações do gerador. O valor digitado lá fica salvo no navegador e
- * passa a valer para todos os orçamentos.
+ * Dados da empresa que assina o contrato, tirados do cartão CNPJ da 75 LAB.
+ * Dá para ajustar na tela de Configurações; o que for digitado lá fica salvo no
+ * navegador e passa a valer para todos os orçamentos.
  */
 export const empresaPadrao = {
   marca: 'Ariuno',
   plataformaUrl: 'ariuno.com.br',
   siteUrl: 'conheca.ariuno.com.br',
-  razaoSocial: '[PREENCHER: razão social da 75 LAB]',
+  razaoSocial: '75 LAB ESTRATÉGIA, DESIGN E PRODUÇÃO LTDA',
   nomeFantasia: '75 LAB',
-  cnpj: '[PREENCHER: CNPJ]',
-  endereco: '[PREENCHER: endereço completo, cidade e estado]',
-  email: 'contato@setecincolab.com.br',
-  telefone: '',
-  foro: 'São Paulo, Estado de São Paulo',
+  cnpj: '55.470.982/0001-77',
+  endereco: 'Rua Jurubatuba, 1350, conjunto 913, Centro, São Bernardo do Campo, SP, CEP 09725-000',
+  email: 'contato@75lab.com.br',
+  telefone: '(11) 8864-8434',
+  foro: 'São Bernardo do Campo, Estado de São Paulo',
   responsavel: {
     nome: '',
     cargo: 'Comercial',
-    email: 'contato@setecincolab.com.br',
+    email: 'contato@75lab.com.br',
     telefone: '',
   },
 };

@@ -184,6 +184,12 @@ export default function Formulario({
           aoMudar={(v) => aoMudar({ ...proposta, incluirContrato: v })}
           detalhe="Sai depois da proposta, já preenchido com os dados do cliente e os valores desta negociação"
         />
+        <Chave
+          rotulo="Anexar o cartão CNPJ da 75 LAB"
+          ativo={proposta.incluirAnexoCnpj}
+          aoMudar={(v) => aoMudar({ ...proposta, incluirAnexoCnpj: v })}
+          detalhe="Entra como Anexo I, na última página, e é citado nas disposições gerais do contrato"
+        />
       </Grupo>
 
       <Grupo titulo="Quem assina pela 75 LAB">

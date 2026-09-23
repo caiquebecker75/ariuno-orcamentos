@@ -41,6 +41,7 @@ export type Proposta = {
   };
   responsavel: { nome: string; cargo: string; email: string; telefone: string };
   incluirContrato: boolean;
+  incluirAnexoCnpj: boolean;
 };
 
 export const clienteVazio: Cliente = {
@@ -86,5 +87,6 @@ export function propostaNova(numero: string, responsavel: Proposta['responsavel'
     },
     responsavel,
     incluirContrato: true,
+    incluirAnexoCnpj: true,
   };
 }

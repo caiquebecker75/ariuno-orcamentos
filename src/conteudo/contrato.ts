@@ -25,7 +25,8 @@ export const clausulas: Clausula[] = [
     titulo: 'Do objeto',
     itens: [
       'O presente instrumento tem por objeto a licença de uso, pela CONTRATANTE, da plataforma {{MARCA}}, software de gestão de operação disponibilizado pela CONTRATADA no modelo de software como serviço (SaaS), acessível pela internet no endereço {{PLATAFORMA_URL}}, nas condições comerciais descritas na proposta que integra este contrato.',
-      'A plataforma é disponibilizada no estado em que se encontra na data da contratação, com as funcionalidades publicamente descritas pela CONTRATADA, e pode receber evoluções, correções e novas funcionalidades ao longo da vigência, sem custo adicional, desde que não reduzam o escopo contratado.',
+      'A plataforma é disponibilizada no estado em que se encontra na data da contratação, com as funcionalidades publicamente descritas pela CONTRATADA, e recebe correções e evoluções ao longo da vigência, sem custo adicional, desde que não reduzam o escopo contratado.',
+      'A CONTRATADA poderá desenvolver melhorias significativas na plataforma, assim entendidas as que ampliem de forma relevante o escopo funcional contratado, como novos módulos, integrações ou recursos de inteligência artificial que impliquem aumento de custo de operação. Nessa hipótese, o valor por usuário poderá ser ajustado na forma da cláusula de preço, mediante comunicação prévia de 30 dias, facultado à CONTRATANTE, caso não concorde, encerrar o contrato sem multa até a data da entrada em vigor do novo valor.',
       'A proposta comercial nº {{NUMERO}}, datada de {{DATA_EXTENSO}}, é parte integrante e indissociável deste contrato. Em caso de divergência entre a proposta e este contrato, prevalecem as condições comerciais da proposta.',
     ],
   },
@@ -71,7 +72,8 @@ export const clausulas: Clausula[] = [
       '{{TEXTO_CICLO_PAGAMENTO}}',
       'O primeiro pagamento, no valor de {{PRIMEIRO_PAGAMENTO}}, vence em até 5 dias úteis da assinatura.',
       'A liberação dos acessos à plataforma e o início da implantação ficam condicionados à confirmação do recebimento do primeiro pagamento. Enquanto esse pagamento não for confirmado, nenhum prazo deste contrato começa a correr.',
-      'Os valores são reajustados a cada 12 meses de vigência pela variação positiva do IPCA/IBGE acumulado no período, ou pelo índice que o substituir na sua falta.',
+      'Os valores são reajustados a cada 6 meses de vigência pela variação positiva do IPCA/IBGE acumulado no período, ou pelo índice que o substituir na sua falta, independentemente de aviso, aplicando-se o reajuste na primeira fatura após o fechamento do semestre.',
+      'Além do reajuste por índice, o valor por usuário poderá ser ajustado em razão de melhorias significativas na plataforma, na forma prevista na cláusula do objeto, sempre com comunicação prévia de 30 dias e com a faculdade de a CONTRATANTE encerrar o contrato sem multa caso não concorde com o novo valor.',
       'O atraso no pagamento sujeita a CONTRATANTE a multa de 2% sobre o valor em aberto, juros de mora de 1% ao mês, pro rata die, e correção pelo mesmo índice previsto no item anterior.',
       'O atraso superior a 15 dias autoriza a suspensão do acesso à plataforma, mediante aviso prévio de 5 dias, mantidos os dados da CONTRATANTE preservados durante a suspensão. O atraso superior a 60 dias autoriza a rescisão por justa causa.',
       'Os valores não incluem tributos que venham a ser criados ou majorados após a assinatura, os quais serão repassados nos termos da legislação.',
@@ -182,17 +184,21 @@ export const clausulas: Clausula[] = [
     itens: [
       'Este contrato pode ser rescindido: (a) por qualquer das partes, imotivadamente, mediante aviso prévio escrito de 30 dias; (b) por qualquer das partes, por justa causa, em caso de descumprimento de obrigação não sanada em 15 dias contados da notificação; (c) de pleno direito, em caso de falência, recuperação judicial ou insolvência de qualquer das partes.',
       'A rescisão não afasta a obrigação de pagamento dos valores devidos até a data do encerramento.',
-      'Em caso de rescisão por justa causa provocada pela CONTRATANTE, o acesso poderá ser encerrado imediatamente, observado o direito à extração dos dados na forma da cláusula seguinte.',
+      'Havendo prazo de permanência contratado, a rescisão imotivada pela CONTRATANTE antes do seu término implica multa compensatória de 30% sobre o valor das mensalidades faltantes até o fim do prazo, calculada sobre o valor vigente na data da rescisão e devida em parcela única, no prazo de 10 dias corridos da denúncia.',
+      'A multa prevista no item anterior não é devida quando a rescisão decorrer de descumprimento da CONTRATADA não sanado no prazo de notificação, nem quando a CONTRATANTE não concordar com ajuste de valor decorrente de melhorias significativas na plataforma.',
+      'Em caso de rescisão por justa causa provocada pela CONTRATANTE, o acesso poderá ser encerrado imediatamente, observado o prazo de extração dos dados previsto na cláusula seguinte.',
     ],
   },
   {
     titulo: 'Da devolução e da eliminação dos dados',
     itens: [
-      'Encerrado o contrato por qualquer motivo, a CONTRATANTE terá prazo de 30 dias corridos para extrair seus dados da plataforma em formato estruturado e de uso corrente, como CSV, JSON ou PDF, conforme o tipo de informação.',
-      'A pedido da CONTRATANTE feito dentro desse prazo, a CONTRATADA fornecerá cópia integral dos dados em formato estruturado, sem custo adicional.',
-      'Decorridos 90 dias do encerramento, a CONTRATADA eliminará os dados da CONTRATANTE de seus ambientes produtivos e de backup, salvo aqueles cuja guarda seja exigida por lei, e confirmará a eliminação por escrito mediante solicitação.',
+      'Encerrado o contrato por qualquer motivo, os dados da CONTRATANTE permanecem armazenados pelo prazo de 15 dias corridos, contados da data do encerramento, exclusivamente para que ela possa extrair o que precisar.',
+      'A extração é feita pelos próprios recursos da plataforma, como relatórios, exportações em CSV e documentos em PDF. Não há extração por API nem entrega de cópia de banco de dados, seja durante a vigência ou após o encerramento.',
+      'A CONTRATANTE reconhece que o prazo de 15 dias é suficiente para a extração e assume a responsabilidade por realizá-la dentro dele. A pedido feito por escrito dentro do prazo, e por liberalidade, a CONTRATADA poderá prorrogá-lo uma única vez, por mais 15 dias.',
+      'Decorrido o prazo, a CONTRATADA eliminará os dados da CONTRATANTE de seus ambientes produtivos e, nos ciclos seguintes de retenção, dos backups, salvo aqueles cuja guarda seja exigida por lei, e confirmará a eliminação por escrito mediante solicitação.',
     ],
   },
+
   {
     titulo: 'Da marca própria',
     quando: 'whiteLabel',
@@ -219,7 +225,8 @@ export const clausulas: Clausula[] = [
       'A cessão deste contrato a terceiros depende de anuência prévia e escrita da outra parte, ressalvada a cessão decorrente de reorganização societária, caso em que bastará a comunicação.',
       'As comunicações entre as partes serão feitas por escrito, preferencialmente por e-mail, para os endereços indicados no preâmbulo, considerando-se recebidas na data do envio quando houver confirmação de leitura ou resposta.',
       'As partes reconhecem a validade da assinatura eletrônica deste contrato, nos termos do artigo 10, parágrafo 2º, da Medida Provisória 2.200-2/2001, e da Lei 14.063/2020.',
-      'Este contrato, com a proposta que o integra, representa o entendimento integral entre as partes sobre o seu objeto e substitui tratativas anteriores.',
+      'Integram este contrato, para todos os efeitos, a proposta comercial nº {{NUMERO}} e o Anexo I, comprovante de inscrição e de situação cadastral da CONTRATADA no CNPJ.',
+      'Este contrato, com a proposta e o anexo que o integram, representa o entendimento integral entre as partes sobre o seu objeto e substitui tratativas anteriores.',
     ],
   },
   {

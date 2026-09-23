@@ -4,6 +4,7 @@ import { dataCurta, porExtenso, preencher, validadeEm, valores } from '../lib/do
 import { brl, type Calculo } from '../lib/preco';
 import type { Proposta } from '../lib/tipos';
 import { Logotipo, Marca } from './Marca';
+import { urlPublica } from '../lib/caminhos';
 
 const INCLUSO = [
   'Todos os módulos, sem funcionalidade trancada em plano superior',
@@ -250,8 +251,11 @@ export default function Documento({
                 valor={comPrazo ? `${calculo.vigenciaMeses} meses de permanência` : 'Mensal, sem compromisso de permanência'}
               />
               <Campo rotulo="Pagamento" valor={`Mensal · ${condicoes.formaPagamento} · dia ${condicoes.diaVencimento}`} />
-              <Campo rotulo="Reajuste" valor="IPCA a cada 12 meses de vigência" />
+              <Campo rotulo="Reajuste" valor="IPCA a cada 6 meses de vigência" />
               <Campo rotulo="Liberação" valor="Acessos liberados após a confirmação do primeiro pagamento" />
+              {comPrazo && (
+                <Campo rotulo="Encerramento antes do prazo" valor="Multa de 30% sobre as mensalidades faltantes" />
+              )}
               <Campo rotulo="Validade desta proposta" valor={`${condicoes.validadeDias} dias, até ${validadeEm(proposta.criadoEm, condicoes.validadeDias)}`} />
             </div>
           </div>
@@ -355,6 +359,28 @@ export default function Documento({
               </div>
             ))}
           </div>
+        </Folha>
+      )}
+
+      {proposta.incluirAnexoCnpj && (
+        <Folha quebraAntes rodape={<Rodape proposta={proposta} empresa={empresa} />}>
+          <h1 style={{ fontSize: '16pt' }}>Anexo I · Cartão CNPJ da contratada</h1>
+          <p style={{ marginTop: '4pt', fontSize: '9pt', color: '#696f8d' }}>
+            Comprovante de inscrição e de situação cadastral de {empresa.razaoSocial}, parte integrante do contrato
+            de licença de uso · proposta {proposta.numero}
+          </p>
+          <img
+            src={urlPublica('anexos/cartao-cnpj-75lab.png')}
+            alt="Cartão CNPJ da 75 LAB"
+            style={{
+              display: 'block',
+              width: 'auto',
+              maxWidth: '100%',
+              maxHeight: '222mm',
+              margin: '9pt auto 0',
+              borderRadius: '4pt',
+            }}
+          />
         </Folha>
       )}
 

@@ -44,7 +44,7 @@ export function valores(proposta: Proposta, empresa: Empresa, c: Calculo): Recor
 
   const textoFidelidade =
     plano.ciclo === 'prazo'
-      ? `A CONTRATANTE compromete-se a manter a contratação pelo prazo de ${c.vigenciaMeses} meses, condição que sustenta o valor por usuário praticado nesta proposta. O encerramento antes desse prazo, por iniciativa da CONTRATANTE e sem justa causa, implica a cobrança da diferença entre o valor pago e o valor da tabela sem compromisso de permanência, aplicada aos meses já utilizados.`
+      ? `A CONTRATANTE compromete-se a manter a contratação pelo prazo de ${c.vigenciaMeses} meses, condição que sustenta o valor por usuário praticado nesta proposta. O encerramento antes desse prazo, por iniciativa da CONTRATANTE e sem justa causa, implica a multa compensatória de 30% sobre o valor das mensalidades faltantes, na forma da cláusula de rescisão.`
       : 'Não há compromisso de permanência. A CONTRATANTE pode encerrar o contrato ao fim de qualquer mês, mediante o aviso prévio previsto nesta cláusula.';
 
   return {
