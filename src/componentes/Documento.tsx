@@ -1,7 +1,7 @@
 import { clausulas, fechoContrato, preambulo } from '../conteudo/contrato';
 import type { Empresa } from '../conteudo/empresa';
 import { dataCurta, porExtenso, preencher, validadeEm, valores } from '../lib/documento';
-import { brl, type Calculo } from '../lib/preco';
+import { brl, MESES_MINIMOS_PRAZO, type Calculo } from '../lib/preco';
 import type { Proposta } from '../lib/tipos';
 import { Logotipo, Marca } from './Marca';
 import { urlPublica } from '../lib/caminhos';
@@ -9,9 +9,9 @@ import { urlPublica } from '../lib/caminhos';
 const INCLUSO = [
   'Todos os módulos, sem funcionalidade trancada em plano superior',
   'Usuários do tipo cliente ilimitados e sem custo, para acompanhar e aprovar',
-  'Quadros, Gantt, calendário, horas, capacidade, aprovações e portal do cliente',
+  'Quadros, Gantt, calendário, horas, capacidade, aprovações e portal',
   'Relatório do cliente, financeiro com margem, Ariuno IA e Arena',
-  'Novas funcionalidades e suporte em português durante toda a vigência',
+  'Novas funcionalidades e suporte em português durante a vigência',
 ];
 
 
@@ -65,12 +65,21 @@ function Rodape({ proposta, empresa }: { proposta: Proposta; empresa: Empresa })
 
 function Campo({ rotulo, valor }: { rotulo: string; valor: string }) {
   return (
-    <div>
-      <p style={{ margin: 0, fontSize: '7.5pt', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#8a90ac' }}>
+    <p style={{ margin: 0, fontSize: '9.5pt', lineHeight: 1.35 }}>
+      <span
+        style={{
+          fontFamily: 'Space Mono, monospace',
+          fontSize: '7pt',
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          color: '#8a90ac',
+          marginRight: '4pt',
+        }}
+      >
         {rotulo}
-      </p>
-      <p style={{ margin: '2pt 0 0', fontSize: '10pt', fontWeight: 500 }}>{valor || '[preencher]'}</p>
-    </div>
+      </span>
+      <span style={{ fontWeight: 500 }}>{valor || '[preencher]'}</span>
+    </p>
   );
 }
 
@@ -107,7 +116,7 @@ export default function Documento({
 
         <div style={{ height: '3pt', margin: '9pt 0 11pt', background: 'linear-gradient(90deg,#6A5CFF,#4285FF 50%,#00C2A8)', borderRadius: '2pt' }} />
 
-        <h1 style={{ fontSize: '17.5pt' }}>
+        <h1 style={{ fontSize: '17pt' }}>
           Licença de uso da plataforma Ariuno
           <br />
           para {cliente.nomeFantasia || cliente.razaoSocial || '[cliente]'}
@@ -150,8 +159,14 @@ export default function Documento({
               {comPrazo ? `contrato de ${calculo.vigenciaMeses} meses` : 'mensal, sem compromisso de permanência'}
             </p>
             {comPrazo && calculo.economiaMensalPeloPrazo > 0 && (
-              <p style={{ margin: '4pt 0 0', fontSize: '9pt', color: '#c0ee4e' }}>
-                economia de {brl(calculo.economiaPeriodoPeloPrazo)} no período, contra o mensal
+              <p style={{ margin: '4pt 0 0', fontSize: '8.5pt', color: '#c0ee4e', lineHeight: 1.35 }}>
+                economia de {brl(calculo.economiaPeriodoPeloPrazo)} no período · no mensal sem fidelidade seriam{' '}
+                {brl(calculo.tabelaOutroCiclo * calculo.usuarios + calculo.whiteLabelCobrado)} por mês
+              </p>
+            )}
+            {!comPrazo && (
+              <p style={{ margin: '4pt 0 0', fontSize: '8.5pt', color: '#c0ee4e' }}>
+                com {MESES_MINIMOS_PRAZO} meses de permanência seriam {brl(calculo.tabelaOutroCiclo * calculo.usuarios + calculo.whiteLabelCobrado)} por mês
               </p>
             )}
             {calculo.descontoPercentual > 0 && (
@@ -245,7 +260,7 @@ export default function Documento({
           </div>
           <div>
             <h2>Condições</h2>
-            <div style={{ display: 'grid', gap: '5pt' }}>
+            <div style={{ display: 'grid', gap: '4pt' }}>
               <Campo
                 rotulo="Contratação"
                 valor={comPrazo ? `${calculo.vigenciaMeses} meses de permanência` : 'Mensal, sem compromisso de permanência'}

@@ -16,8 +16,9 @@ import {
 import { dataCurta } from './lib/documento';
 import { brl, calcular, MESES_MINIMOS_PRAZO } from './lib/preco';
 import { propostaNova, type Proposta } from './lib/tipos';
+import { montarMensagem } from './conteudo/mensagem';
 
-type Aba = 'editor' | 'lista' | 'config';
+type Aba = 'editor' | 'mensagem' | 'lista' | 'config';
 
 const STATUS: Record<Proposta['status'], { rotulo: string; cor: string }> = {
   rascunho: { rotulo: 'Rascunho', cor: '#eaedf9' },
@@ -42,6 +43,27 @@ export default function App() {
     () => calcular({ ...proposta.plano, precoPorUsuario: proposta.plano.precoPorUsuario }),
     [proposta.plano],
   );
+
+  // a mensagem para o cliente mostra as duas formas de contratar
+  const comparativo = useMemo(() => {
+    const mesesDoPrazo = proposta.plano.ciclo === 'prazo' ? proposta.plano.vigenciaMeses : 12;
+    return {
+      mensal: calcular({ ...proposta.plano, ciclo: 'mensal', precoManual: false, precoPorUsuario: null }),
+      prazo: calcular({ ...proposta.plano, ciclo: 'prazo', vigenciaMeses: mesesDoPrazo, precoManual: false, precoPorUsuario: null }),
+    };
+  }, [proposta.plano]);
+
+  const mensagem = useMemo(
+    () => montarMensagem(proposta, empresa, comparativo.mensal, comparativo.prazo),
+    [proposta, empresa, comparativo],
+  );
+
+  const copiar = (texto: string, oQue: string) => {
+    navigator.clipboard
+      .writeText(texto)
+      .then(() => setAviso(`${oQue} copiado`))
+      .catch(() => setAviso('Não consegui copiar. Selecione o texto e use cmd+C.'));
+  };
 
   // a prévia se ajusta à largura disponível
   useEffect(() => {
@@ -131,7 +153,7 @@ export default function App() {
             <span className="hidden text-[13px] text-white/50 sm:block">gerador de orçamentos</span>
           </div>
           <nav className="flex items-center gap-1">
-            {([['editor', 'Orçamento'], ['lista', `Salvos (${propostas.length})`], ['config', 'Configurações']] as const).map(
+            {([['editor', 'Orçamento'], ['mensagem', 'Mensagem'], ['lista', `Salvos (${propostas.length})`], ['config', 'Configurações']] as const).map(
               ([chave, rotulo]) => (
                 <button
                   key={chave}
@@ -237,6 +259,67 @@ export default function App() {
                 <Documento proposta={proposta} empresa={empresa} calculo={calculo} />
               </div>
             </div>
+          </div>
+        </main>
+      )}
+
+      {aba === 'mensagem' && (
+        <main className="nao-imprime mx-auto flex max-w-[980px] flex-col gap-4 px-5 py-6">
+          <div className="cartao p-5">
+            <h2 className="font-display text-[19px] font-bold">Mensagem para mandar junto com o orçamento</h2>
+            <p className="mt-2 text-[14px] leading-relaxed text-txt-2">
+              Texto pronto com os números deste orçamento, nas duas formas de contratar. Copie, ajuste a linha entre
+              colchetes com o que o cliente falou na reunião e mande com o PDF anexado.
+            </p>
+          </div>
+
+          <div className="cartao p-5">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="rotulo-secao">Assunto do e-mail</p>
+              <Botao aoClicar={() => copiar(mensagem.assunto, 'Assunto')} tipo="apagado" pequeno>
+                Copiar
+              </Botao>
+            </div>
+            <p className="rounded-[10px] bg-paper px-4 py-3 text-[15px]">{mensagem.assunto}</p>
+          </div>
+
+          <div className="cartao p-5">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="rotulo-secao">Corpo do e-mail</p>
+              <Botao aoClicar={() => copiar(mensagem.corpo, 'E-mail')}>Copiar o e-mail</Botao>
+            </div>
+            <pre className="whitespace-pre-wrap rounded-[10px] bg-paper px-4 py-4 font-sans text-[15px] leading-relaxed text-txt">
+              {mensagem.corpo}
+            </pre>
+          </div>
+
+          <div className="cartao p-5">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="rotulo-secao">Versão curta para WhatsApp</p>
+              <Botao aoClicar={() => copiar(mensagem.whatsapp, 'WhatsApp')} tipo="apagado" pequeno>
+                Copiar
+              </Botao>
+            </div>
+            <pre className="whitespace-pre-wrap rounded-[10px] bg-paper px-4 py-4 font-sans text-[15px] leading-relaxed text-txt">
+              {mensagem.whatsapp}
+            </pre>
+          </div>
+
+          <div className="cartao p-5 text-[14px] leading-relaxed text-txt-2">
+            <p className="rotulo-secao mb-2">Os dois valores que entram no texto</p>
+            <p>
+              Contrato de {comparativo.prazo.vigenciaMeses} meses:{' '}
+              <strong className="text-ink">{brl(comparativo.prazo.recorrenteMensal)}</strong> por mês, a{' '}
+              {brl(comparativo.prazo.porUsuario)} por usuário.
+            </p>
+            <p className="mt-1">
+              Mensal sem fidelidade: <strong className="text-ink">{brl(comparativo.mensal.recorrenteMensal)}</strong> por
+              mês, a {brl(comparativo.mensal.porUsuario)} por usuário.
+            </p>
+            <p className="mt-2 text-txt-3">
+              O desconto comercial e o preço na mão valem para o orçamento e para o PDF. No texto da mensagem os dois
+              cenários saem pela tabela, para a comparação ficar honesta.
+            </p>
           </div>
         </main>
       )}

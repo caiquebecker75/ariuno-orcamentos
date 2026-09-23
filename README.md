@@ -74,6 +74,23 @@ início da implantação ficam condicionados à confirmação do primeiro pagame
 prazos só começam a correr a partir daí. A vigência conta da liberação dos acessos, não
 da assinatura.
 
+## A mensagem para mandar junto
+
+A aba **Mensagem** monta o texto que o executivo manda com o PDF, já com os números deste
+orçamento nas duas formas de contratar: o contrato com prazo e o mensal sem fidelidade.
+São três blocos, cada um com botão de copiar: assunto do e-mail, corpo do e-mail e uma
+versão curta para WhatsApp.
+
+O texto agradece a reunião, apresenta as duas opções, diz o que está incluído nas duas,
+explica que a liberação acontece depois do primeiro pagamento e fecha com o convite para
+uma conversa de 30 minutos. Tem **uma linha entre colchetes** para o executivo trocar pelo
+que o cliente falou na reunião, com as palavras dele. É a parte que faz o e-mail parecer
+escrito para aquela empresa, e não um modelo.
+
+Os dois valores da mensagem saem sempre pela tabela, mesmo quando o orçamento tem desconto
+comercial ou preço na mão, para a comparação entre mensal e prazo ficar honesta. O texto
+fica em `src/conteudo/mensagem.ts`.
+
 ## O contrato que sai no PDF
 
 O contrato foi redigido para a 75 LAB a partir da estrutura que escritórios brasileiros
