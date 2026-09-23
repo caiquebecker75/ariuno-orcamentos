@@ -7,13 +7,10 @@ import { Logotipo, Marca } from './Marca';
 
 const INCLUSO = [
   'Todos os módulos, sem funcionalidade trancada em plano superior',
-  'Usuários do tipo cliente ilimitados e sem custo, para acompanhar e aprovar',
-  'Quadros, Gantt, calendário, apontamento de horas e capacidade do time',
-  'Aprovações com histórico, formulários públicos e portal do cliente',
-  'Relatório do cliente em link público e em PDF',
-  'Financeiro com orçamento, despesa por tarefa, contas e margem por cliente',
-  'Ariuno IA, Arena de adoção e novas funcionalidades durante a vigência',
-  'Suporte em português, em dias úteis, com quem construiu a plataforma',
+  'Usuários do tipo cliente ilimitados e sem custo',
+  'Quadros, Gantt, calendário, horas, capacidade e aprovações',
+  'Relatório do cliente em link e em PDF, e financeiro com margem',
+  'Ariuno IA, Arena, novas funcionalidades e suporte em português',
 ];
 
 
@@ -109,7 +106,7 @@ export default function Documento({
 
         <div style={{ height: '3pt', margin: '9pt 0 11pt', background: 'linear-gradient(90deg,#6A5CFF,#4285FF 50%,#00C2A8)', borderRadius: '2pt' }} />
 
-        <h1 style={{ fontSize: '19pt' }}>
+        <h1 style={{ fontSize: '17.5pt' }}>
           Licença de uso da plataforma Ariuno
           <br />
           para {cliente.nomeFantasia || cliente.razaoSocial || '[cliente]'}
@@ -121,7 +118,7 @@ export default function Documento({
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9pt', margin: '11pt 0' }}>
-          <div style={{ background: '#f7f8fd', borderRadius: '8pt', padding: '10pt 12pt' }}>
+          <div style={{ background: '#f7f8fd', borderRadius: '8pt', padding: '8pt 10pt' }}>
             <p className="mono" style={{ margin: 0, fontSize: '7.5pt', letterSpacing: '0.1em', color: '#696f8d' }}>
               PREPARADA PARA
             </p>
@@ -139,7 +136,7 @@ export default function Documento({
               {cliente.contatoEmail} {cliente.contatoTelefone ? `· ${cliente.contatoTelefone}` : ''}
             </p>
           </div>
-          <div style={{ background: '#0b0d1e', color: '#fff', borderRadius: '8pt', padding: '10pt 12pt' }}>
+          <div style={{ background: '#0b0d1e', color: '#fff', borderRadius: '8pt', padding: '8pt 10pt' }}>
             <p className="mono" style={{ margin: 0, fontSize: '7.5pt', letterSpacing: '0.1em', color: 'rgb(255 255 255 / 0.55)' }}>
               INVESTIMENTO {anual ? 'ANUAL À VISTA' : 'MENSAL'}
             </p>
@@ -190,14 +187,14 @@ export default function Documento({
             {plano.incluirWhiteLabel && (
               <tr>
                 <td>Marca própria (white-label)</td>
-                <td>Sua marca, suas cores e seu domínio na plataforma</td>
+                <td>Sua marca e seu domínio na plataforma</td>
                 <td style={{ textAlign: 'right' }}>{brl(calculo.whiteLabel)} / mês</td>
               </tr>
             )}
             <tr>
               <td>Implantação, migração e treinamento</td>
               <td>
-                Descoberta, configuração, migração das bases, treinamento por função e go-live em 21 dias
+                Descoberta, configuração, migração, treinamento e go-live em 21 dias
                 {calculo.isentaImplantacao && (
                   <>
                     <br />
@@ -211,7 +208,7 @@ export default function Documento({
             </tr>
             <tr>
               <td>Usuários do tipo cliente</td>
-              <td>Ilimitados, acompanham e aprovam sem ocupar assento</td>
+              <td>Ilimitados, sem ocupar assento</td>
               <td style={{ textAlign: 'right' }}>sem custo</td>
             </tr>
             <tr className="doc-total">
@@ -222,7 +219,7 @@ export default function Documento({
           </tbody>
         </table>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: '12pt', marginTop: '11pt' }}>
+        <div className="bloco-fecho" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: '12pt', marginTop: '11pt' }}>
           <div>
             <h2>O que está incluído</h2>
             <ul style={{ margin: 0, paddingLeft: '12pt', fontSize: '9pt', color: '#3d4360' }}>
@@ -235,16 +232,15 @@ export default function Documento({
             <h2>Condições</h2>
             <div style={{ display: 'grid', gap: '6pt' }}>
               <Campo rotulo="Vigência" valor={`${plano.vigenciaMeses} meses, sem fidelidade além do período`} />
-              <Campo rotulo="Pagamento" valor={`${anual ? 'Anual à vista' : 'Mensal'} · ${condicoes.formaPagamento} · vencimento dia ${condicoes.diaVencimento}`} />
-              <Campo rotulo="Reajuste" valor="IPCA a cada 12 meses de vigência" />
+              <Campo rotulo="Pagamento" valor={`${anual ? 'Anual à vista' : 'Mensal'} · ${condicoes.formaPagamento} · dia ${condicoes.diaVencimento}`} />
+              <Campo rotulo="Reajuste e início" valor="IPCA a cada 12 meses · implantação em até 5 dias úteis do aceite" />
               <Campo rotulo="Validade desta proposta" valor={`${condicoes.validadeDias} dias, até ${validadeEm(proposta.criadoEm, condicoes.validadeDias)}`} />
-              <Campo rotulo="Início" valor="Implantação começa em até 5 dias úteis do aceite" />
             </div>
           </div>
         </div>
 
         {condicoes.observacoes.trim() && (
-          <div style={{ marginTop: '10pt', background: '#f7f8fd', borderRadius: '8pt', padding: '10pt 12pt' }}>
+          <div className="bloco-fecho" style={{ marginTop: '10pt', background: '#f7f8fd', borderRadius: '8pt', padding: '8pt 10pt' }}>
             <p className="mono" style={{ margin: 0, fontSize: '7.5pt', letterSpacing: '0.1em', color: '#696f8d' }}>
               OBSERVAÇÕES
             </p>
@@ -252,19 +248,22 @@ export default function Documento({
           </div>
         )}
 
-        <div style={{ marginTop: '11pt', display: 'flex', alignItems: 'center', gap: '9pt', background: '#eaedf9', borderRadius: '8pt', padding: '9pt 11pt' }}>
+        <div className="bloco-fecho" style={{ marginTop: '9pt', display: 'flex', alignItems: 'center', gap: '8pt', background: '#eaedf9', borderRadius: '8pt', padding: '7pt 10pt' }}>
           <Marca tamanho={22} />
-          <p style={{ margin: 0, fontSize: '9pt', color: '#3d4360' }}>
-            Para aceitar, basta responder este documento assinado. O contrato de licença de uso, nas páginas
-            seguintes, passa a valer com a assinatura das duas partes.
+          <p style={{ margin: 0, fontSize: '8.5pt', color: '#3d4360' }}>
+            Para aceitar, responda este documento assinado. O contrato nas páginas seguintes passa a valer com a
+            assinatura das duas partes.
+            <br />
+            <strong style={{ color: '#14172b' }}>
+              {responsavel.nome || empresa.nomeFantasia}
+              {responsavel.cargo ? `, ${responsavel.cargo}` : ''}
+            </strong>{' '}
+            · {responsavel.email || empresa.email}
+            {responsavel.telefone ? ` · ${responsavel.telefone}` : ''}
           </p>
         </div>
 
-        <p style={{ marginTop: '8pt', fontSize: '8.5pt', color: '#4d5472' }}>
-          {responsavel.nome || empresa.nomeFantasia}
-          {responsavel.cargo ? `, ${responsavel.cargo}` : ''} · {responsavel.email || empresa.email}
-          {responsavel.telefone ? ` · ${responsavel.telefone}` : ''}
-        </p>
+
       </Folha>
 
       {/* ─────────── contrato ─────────── */}
